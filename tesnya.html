@@ -1,3 +1,26 @@
+<?php 
+    $maxContent = 16;
+
+    if (isset($_POST['submitSearch']) )
+     {          
+        $keyword = $_POST['searchKeyword'];
+
+        if (empty($keyword))
+        {
+            echo '<script>
+                alert("Gagal")
+            </script>';
+            echo '<script>
+                document.location.href = "baru.php"
+            </script>';
+        }
+    }
+?>
+
+<script>
+    document.location.href = 'baru.php'
+</script>
+
 <!doctype html>
 <html lang="en">
 
@@ -40,12 +63,18 @@
                             Dropdown
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li>
+                                <a class="dropdown-item" href="#">Action</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">Another action</a>
+                            </li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -115,226 +144,62 @@
         <section id="mainContent">
             <form id="searchForm" method="post" action="">
                 <input type="text" name="searchKeyword" id="" placeholder="Search Bar">
-                <button type="submit">Search</button>
+                <button type="submit" name="submitSearch">Search</button>
             </form>
-
             <div class="row">
-                <div class="col-3">
-                    <div class="contentContainer">
-                        <div class="video">
-                            <iframe id="iframe" style="width:100%;height:100%" src="//www.youtube.com/embed/n0WoA0REmyA"
-                                data-autoplay-src="//www.youtube.com/embed/n0WoA0REmyA?autoplay=1"></iframe>
+                <?php 
+                    if (isset($_POST['submitSearch'])) {
+                        if (!empty($keyword )) {
+                            $apikey = 'AIzaSyBqbREm8cqNHOIFxu-io9U8rDQ7Nv0RP0A'; 
+                            $keywordBaru = str_replace(" ","%20",$keyword);
+                            $googleApiUrl = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' . $keywordBaru . '&maxResults=' . $maxContent .'&type=video'. '&key=' . $apikey;
+
+                            $ch = curl_init();
+
+                            curl_setopt($ch, CURLOPT_HEADER, 0);
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                            curl_setopt($ch, CURLOPT_URL, $googleApiUrl);
+                            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                            curl_setopt($ch, CURLOPT_VERBOSE, 0);
+                            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                            $response = curl_exec($ch);
+
+                            curl_close($ch);
+                            $data = json_decode($response);
+                            $value = json_decode(json_encode($data), true);
+                        }
+                ?>
+                <?php 
+                    for ($i=0; $i < $maxContent; $i++) { 
+                        $videoId = $value['items'][$i]['id']['videoId'];
+                        $title = $value['items'][$i]['snippet']['title'];
+                        $description = $value['items'][$i]['snippet']['description'];
+                        $title = $value['items'][$i]['snippet']['title'];
+                ?>
+                <div class="contentContainer">
+                    <div class="youtubeVideo">
+                        <iframe id="iframe" style="width:100%;height:100%"
+                            src="//www.youtube.com/embed/<?php echo $videoId; ?>"
+                            data-autoplay-src="//www.youtube.com/embed/<?php echo $videoId; ?>?autoplay=1"></iframe>
+                    </div>
+                    <div class="videoInfo">
+                        <div class="videoTitle">
+                            <b>
+                                <?php echo $title; ?>
+                            </b>
                         </div>
-                        <div class="videoInfo">
-                            <div class="videoTitle">
-                                <b>
-                                    asdasdasdasdasd
-                                </b>
-                            </div>
-                            <div class="videoDesc">
-                                asdasdasdasdasdasdad
-                            </div>
+                        <div class="videoDesc">
+                            <?php echo $description; ?>
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
-                    <div class="contentContainer">
-                        <div class="video">
-                            <iframe id="iframe" style="width:100%;height:100%" src="//www.youtube.com/embed/n0WoA0REmyA"
-                                data-autoplay-src="//www.youtube.com/embed/n0WoA0REmyA?autoplay=1"></iframe>
-                        </div>
-                        <div class="videoInfo">
-                            <div class="videoTitle">
-                                <b>
-                                    asdasdasdasdasd
-                                </b>
-                            </div>
-                            <div class="videoDesc">
-                                asdasdasdasdasdasdad
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="contentContainer">
-                        <div class="video">
-                            <iframe id="iframe" style="width:100%;height:100%" src="//www.youtube.com/embed/n0WoA0REmyA"
-                                data-autoplay-src="//www.youtube.com/embed/n0WoA0REmyA?autoplay=1"></iframe>
-                        </div>
-                        <div class="videoInfo">
-                            <div class="videoTitle">
-                                <b>
-                                    asdasdasdasdasd
-                                </b>
-                            </div>
-                            <div class="videoDesc">
-                                asdasdasdasdasdasdad
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="contentContainer">
-                        <div class="video">
-                            <iframe id="iframe" style="width:100%;height:100%" src="//www.youtube.com/embed/n0WoA0REmyA"
-                                data-autoplay-src="//www.youtube.com/embed/n0WoA0REmyA?autoplay=1"></iframe>
-                        </div>
-                        <div class="videoInfo">
-                            <div class="videoTitle">
-                                <b>
-                                    asdasdasdasdasd
-                                </b>
-                            </div>
-                            <div class="videoDesc">
-                                asdasdasdasdasdasdad
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="contentContainer">
-                        <div class="video">
-                            <iframe id="iframe" style="width:100%;height:100%" src="//www.youtube.com/embed/n0WoA0REmyA"
-                                data-autoplay-src="//www.youtube.com/embed/n0WoA0REmyA?autoplay=1"></iframe>
-                        </div>
-                        <div class="videoInfo">
-                            <div class="videoTitle">
-                                <b>
-                                    asdasdasdasdasd
-                                </b>
-                            </div>
-                            <div class="videoDesc">
-                                asdasdasdasdasdasdad
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="contentContainer">
-                        <div class="video">
-                            <iframe id="iframe" style="width:100%;height:100%" src="//www.youtube.com/embed/n0WoA0REmyA"
-                                data-autoplay-src="//www.youtube.com/embed/n0WoA0REmyA?autoplay=1"></iframe>
-                        </div>
-                        <div class="videoInfo">
-                            <div class="videoTitle">
-                                <b>
-                                    asdasdasdasdasd
-                                </b>
-                            </div>
-                            <div class="videoDesc">
-                                asdasdasdasdasdasdad
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="contentContainer">
-                        <div class="video">
-                            <iframe id="iframe" style="width:100%;height:100%" src="//www.youtube.com/embed/n0WoA0REmyA"
-                                data-autoplay-src="//www.youtube.com/embed/n0WoA0REmyA?autoplay=1"></iframe>
-                        </div>
-                        <div class="videoInfo">
-                            <div class="videoTitle">
-                                <b>
-                                    asdasdasdasdasd
-                                </b>
-                            </div>
-                            <div class="videoDesc">
-                                asdasdasdasdasdasdad
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="contentContainer">
-                        <div class="video">
-                            <iframe id="iframe" style="width:100%;height:100%" src="//www.youtube.com/embed/n0WoA0REmyA"
-                                data-autoplay-src="//www.youtube.com/embed/n0WoA0REmyA?autoplay=1"></iframe>
-                        </div>
-                        <div class="videoInfo">
-                            <div class="videoTitle">
-                                <b>
-                                    asdasdasdasdasd
-                                </b>
-                            </div>
-                            <div class="videoDesc">
-                                asdasdasdasdasdasdad
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="contentContainer">
-                        <div class="video">
-                            <iframe id="iframe" style="width:100%;height:100%" src="//www.youtube.com/embed/n0WoA0REmyA"
-                                data-autoplay-src="//www.youtube.com/embed/n0WoA0REmyA?autoplay=1"></iframe>
-                        </div>
-                        <div class="videoInfo">
-                            <div class="videoTitle">
-                                <b>
-                                    asdasdasdasdasd
-                                </b>
-                            </div>
-                            <div class="videoDesc">
-                                asdasdasdasdasdasdad
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="contentContainer">
-                        <div class="video">
-                            <iframe id="iframe" style="width:100%;height:100%" src="//www.youtube.com/embed/n0WoA0REmyA"
-                                data-autoplay-src="//www.youtube.com/embed/n0WoA0REmyA?autoplay=1"></iframe>
-                        </div>
-                        <div class="videoInfo">
-                            <div class="videoTitle">
-                                <b>
-                                    asdasdasdasdasd
-                                </b>
-                            </div>
-                            <div class="videoDesc">
-                                asdasdasdasdasdasdad
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="contentContainer">
-                        <div class="video">
-                            <iframe id="iframe" style="width:100%;height:100%" src="//www.youtube.com/embed/n0WoA0REmyA"
-                                data-autoplay-src="//www.youtube.com/embed/n0WoA0REmyA?autoplay=1"></iframe>
-                        </div>
-                        <div class="videoInfo">
-                            <div class="videoTitle">
-                                <b>
-                                    asdasdasdasdasd
-                                </b>
-                            </div>
-                            <div class="videoDesc">
-                                asdasdasdasdasdasdad
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <div class="contentContainer">
-                        <div class="video">
-                            <iframe id="iframe" style="width:100%;height:100%" src="//www.youtube.com/embed/n0WoA0REmyA"
-                                data-autoplay-src="//www.youtube.com/embed/n0WoA0REmyA?autoplay=1"></iframe>
-                        </div>
-                        <div class="videoInfo">
-                            <div class="videoTitle">
-                                <b>
-                                    asdasdasdasdasd
-                                </b>
-                            </div>
-                            <div class="videoDesc">
-                                asdasdasdasdasdasdad
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <?php        
+                    }
+                ?>
+                <?php                       
+                    }
+                ?>
+
             </div>
         </section>
     </main>
