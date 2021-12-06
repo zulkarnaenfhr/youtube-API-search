@@ -1,5 +1,4 @@
 <?php 
-    require 'config.php';
     $maxContent = 16;
 
     if (isset($_POST['submitSearch']) )
@@ -51,6 +50,44 @@
                     aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Link</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a
+                                class="nav-link dropdown-toggle"
+                                href="#"
+                                id="navbarDropdown"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Dropdown
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="#">Action</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">Another action</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">Something else here</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </nav>
 
@@ -123,117 +160,79 @@
         <main>
             <section id="mainContent">
                 <form id="searchForm" method="post" action="">
-                    <input type="text" name="searchKeyword" id="" placeholder="Search Bar" class="inputSearchKeyword">
-                    <button type="submit" class="buttonSearch" name="submitSearch">Search</button>
+                    <input type="text" name="searchKeyword" id="" placeholder="Search Bar">
+                    <button type="submit" name="submitSearch">Search</button>
                 </form>
-                <?php 
-                    if (isset($_POST['submitSearch']) && !empty($keyword)) {
-                ?>
                 <div class="searchingInformation">
-                    <p class="headerHasilPencarian">Menampilkan hasil pencarian dari
-                        <b>
+                    <p>Menampilkan hasil pencarian dari 
+                        <span>
                             <?php echo $keyword ?>
-                        </b>
+                        </span>
                     </p>
-                </div>
-            <?php } else { ?>
-                <div class="welcomingDiv">
-                    <div class="welcomingDiv-content">
-                        <h1>Welcome on Board, Retro Youtube Clone</h1>
-                        <h3>Fahri Izzuddin Zulkarnaen (19081010046)</h3>
-                    </div>
-                </div>
 
-                <!-- tinggal styling menyesuaikan, misal belum di set jadi welcome h1, kalau
-                udah di set jadi searching information -->
-                <?php    
-                    }
-                ?>
-                <?php 
+                </div>
+                <div class="row">
+                    <?php 
                     if (isset($_POST['submitSearch']) && !empty($keyword)) {
-                        $apikey = ' '; 
+                        $apikey = 'AIzaSyBqbREm8cqNHOIFxu-io9U8rDQ7Nv0RP0A'; 
                         $keywordBaru = str_replace(" ","%20",$keyword);
                         $googleApiUrl = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' . $keywordBaru . '&maxResults=' . $maxContent .'&type=video'. '&key=' . $apikey;
-                        $searchAPIYoutube = file_get_contents($googleApiUrl);
-                        $value = json_decode($searchAPIYoutube,true)
+
+                        $ch = curl_init();
+
+                        curl_setopt($ch, CURLOPT_HEADER, 0);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        curl_setopt($ch, CURLOPT_URL, $googleApiUrl);
+                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                        curl_setopt($ch, CURLOPT_VERBOSE, 0);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                        $response = curl_exec($ch);
+
+                        curl_close($ch);
+                        $data = json_decode($response);
+                        $value = json_decode(json_encode($data), true);
                 ?>
 
-                <?php 
+                    <?php 
                     for ($i=0; $i < $maxContent; $i++) { 
                         $videoId = $value['items'][$i]['id']['videoId'];
                         $title = $value['items'][$i]['snippet']['title'];
                         $description = $value['items'][$i]['snippet']['description'];
                         $title = $value['items'][$i]['snippet']['title'];
-                        $channelId = $value['items'][$i]['snippet']['channelId'];
-
-                        // get jumlah viewers
-                        $videoStatisticsAPI = "https://youtube.googleapis.com/youtube/v3/videos?part=statistics&id=$videoId&key=$apikey";
-                        $videoStatisticsAPI = file_get_contents($videoStatisticsAPI);
-                        $dataVideoStatistics = json_decode($videoStatisticsAPI, true);
-                        $viewers = $dataVideoStatistics['items'][0]['statistics']['viewCount'];
-                        $jumlahViewers = singkat_angka($viewers);
-
-                        // get publish datenya
-                        $datePublish = $value['items'][$i]['snippet']['publishedAt'];
-                        // $uploadDate = strtotime($datePublish);
-                        // $uploadDate= date("Y-m-d", $uploadDate); 
-                        
-                        $jaraknya = "";
-
-                        $selisihPublish = getJarakPublish($datePublish);
-
-                        // get channel data
-                        $channelDataAPI = "https://www.googleapis.com/youtube/v3/channels?part=snippet&id=$channelId&key=$apikey";
-                        $channelDataAPI = file_get_contents($channelDataAPI);
-                        $channelData = json_decode($channelDataAPI, true);
-                        $channelName = $channelData['items'][0]['snippet']['title'];
-                        $channelPict = $channelData['items'][0]['snippet']['thumbnails']['default']['url'];
                         
                 ?>
-                <div class="row">
-                    <div class="col-4">
-                        <div class="youtubeVideo">
-                            <iframe
-                                class="videoYoutube-embed"
-                                id="iframe"
-                                src="//www.youtube.com/embed/<?php echo $videoId; ?>"
-                                data-autoplay-src="//www.youtube.com/embed/<?php echo $videoId; ?>?autoplay=1"></iframe>
+                    <div class="col-3">
+                        <div class="contentContainer">
+                            <div class="youtubeVideo">
+                                <iframe
+                                    id="iframe"
+                                    style="width:100%;height:100%"
+                                    src="//www.youtube.com/embed/<?php echo $videoId; ?>"
+                                    data-autoplay-src="//www.youtube.com/embed/<?php echo $videoId; ?>?autoplay=1"></iframe>
+                            </div>
+                            <div class="videoInfo">
+                                <div class="videoTitle">
+                                    <b>
+                                        <?php echo $title; ?>
+                                    </b>
+                                </div>
+                                <div class="videoDesc">
+                                    <?php echo $description; ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-7">
-                        <div class="videoInfo">
-                            <h4 class="videoTitle">
-                                <?php echo $title; ?>
-                            </h4>
-                            <p>
-                                <img src="<?php echo $channelPict?>" alt="" class="channelImg"> <?php echo $channelName ?>
-                            </p>
-                            <p>
-                                <?php echo $jumlahViewers ?>
-                                ***<?php echo $selisihPublish ?>
-                                yang lalu
-                            </p>
-                            <p class="videoDesc">
-                                <?php echo $description; ?>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <?php 
+                    <?php 
                     } // punya for ($i=0; $i < $maxContent; $i++)
                 ?>
 
-                <?php
+                    <?php
                     } // punya if yang if (isset($_POST['submitSearch']) && !empty($keyword )) 
                 ?>
+                </div>
             </section>
         </main>
 
-        <footer>
-            <p>Design and Develop by
-                <span>SpaceCapt</span>
-                <span style="font-size: 15px; color: #b91646;">@2021</span></p>
-        </footer>
         <!-- Optional JavaScript; choose one of the two! -->
 
         <!-- Option 1: Bootstrap Bundle with Popper -->

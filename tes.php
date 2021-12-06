@@ -152,6 +152,11 @@
                 <input type="text" name="searchKeyword" id="" placeholder="Search Bar">
                 <button type="submit" name="submitSearch">Search</button>
             </form>
+            <div class="searchingInformation">
+                <p>
+                    <?php echo $keyword ?>
+                </p>
+            </div>
             <div class="row">
                 <?php 
                     if (isset($_POST['submitSearch']) && !empty($keyword)) {
