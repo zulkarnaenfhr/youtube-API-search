@@ -151,7 +151,7 @@
                 ?>
                 <?php 
                     if (isset($_POST['submitSearch']) && !empty($keyword)) {
-                        $apikey = ' '; 
+                        $apikey = 'AIzaSyDEoK_aNvlOJGGbO4F8S7GqctsYfLA9Drk'; 
                         $keywordBaru = str_replace(" ","%20",$keyword);
                         $googleApiUrl = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' . $keywordBaru . '&maxResults=' . $maxContent .'&type=video'. '&key=' . $apikey;
                         $searchAPIYoutube = file_get_contents($googleApiUrl);
@@ -175,8 +175,6 @@
 
                         // get publish datenya
                         $datePublish = $value['items'][$i]['snippet']['publishedAt'];
-                        // $uploadDate = strtotime($datePublish);
-                        // $uploadDate= date("Y-m-d", $uploadDate); 
                         
                         $jaraknya = "";
 
