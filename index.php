@@ -1,6 +1,6 @@
 <?php 
     require 'config.php';
-    $maxContent = 16;
+    $maxContent = 15;
 
     if (isset($_POST['submitSearch']) )
      {          
@@ -143,17 +143,14 @@
                         <h3>Fahri Izzuddin Zulkarnaen (19081010046)</h3>
                     </div>
                 </div>
-
-                <!-- tinggal styling menyesuaikan, misal belum di set jadi welcome h1, kalau
-                udah di set jadi searching information -->
                 <?php    
                     }
                 ?>
                 <?php 
                     if (isset($_POST['submitSearch']) && !empty($keyword)) {
-                        $apikey = 'AIzaSyDEoK_aNvlOJGGbO4F8S7GqctsYfLA9Drk'; 
+                        $apikey = 'AIzaSyBqbREm8cqNHOIFxu-io9U8rDQ7Nv0RP0A'; 
                         $keywordBaru = str_replace(" ","%20",$keyword);
-                        $googleApiUrl = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' . $keywordBaru . '&maxResults=' . $maxContent .'&type=video'. '&key=' . $apikey;
+                        $googleApiUrl = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' . $keywordBaru . '&maxResults=' . $maxContent .'&type=video&key=' . $apikey;
                         $searchAPIYoutube = file_get_contents($googleApiUrl);
                         $value = json_decode($searchAPIYoutube,true)
                 ?>
@@ -198,7 +195,7 @@
                                 data-autoplay-src="//www.youtube.com/embed/<?php echo $videoId; ?>?autoplay=1"></iframe>
                         </div>
                     </div>
-                    <div class="col-7">
+                    <div class="col-8">
                         <div class="videoInfo">
                             <h4 class="videoTitle">
                                 <?php echo $title; ?>

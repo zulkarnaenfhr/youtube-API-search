@@ -3,7 +3,7 @@
         $uploadDate = strtotime($publishAt);
         $uploadDate= date("Y-m-d", $uploadDate); 
         $uploadDate= new DateTime($uploadDate);
-        $tanggal2 = date_create();
+        $tanggal2 = date_create('now');
         $jarak = $uploadDate->diff($tanggal2); // buat mencari jarak
         
         $jarakAsli = function($nb,$str){global $jaraknya; return $jaraknya .=" ".$nb.$str;}; // adds plurals
