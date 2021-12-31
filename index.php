@@ -140,7 +140,6 @@
                 <div class="welcomingDiv">
                     <div class="welcomingDiv-content">
                         <h1>Welcome on Board, Retro Youtube Clone</h1>
-                        <h3>Fahri Izzuddin Zulkarnaen (19081010046)</h3>
                     </div>
                 </div>
                 <?php    
